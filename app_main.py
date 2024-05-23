@@ -23,7 +23,6 @@ DENSITY_AIR = 1.225
 FRIDGE_VOLUME = 100 / 1000  # Volume of the refrigerator (m^3)
 MEASUREMENT_PERIOD = 86400  # Measurement period (seconds) in a day
 DESIRED_FRIDGE_TEMP = 4  # Desired temperature inside the fridge (Celsius)
-# AMBIENT_TEMP = 25  # Ambient temperature (Celsius)
 SOLAR_PANEL_AREA = 2  # Area of the solar panel (square meters)
 SOLAR_PANEL_EFFICIENCY = 0.15  # Solar panel efficiency (decimal)
 INVERTER_EFFICIENCY = 0.9  # Inverter efficiency (decimal)
