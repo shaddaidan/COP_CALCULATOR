@@ -1,7 +1,7 @@
 # Define constants
 DESIRED_FRIDGE_TEMP = 4  # Desired temperature inside the fridge (Celsius)
 
-def calculate_cop(supplied_power_kjs, fridge_volume, ambient_temp, measurement_period):
+def calculate_cop(supplied_power_js, fridge_volume, ambient_temp, measurement_period):
   """
   Calculates the COP (Coefficient of Performance) of a solar-powered refrigerator based on user-supplied power in kJ/s and user-defined measurement period. However, this simplified version skips the conversion to Kelvin.
 
@@ -18,11 +18,11 @@ def calculate_cop(supplied_power_kjs, fridge_volume, ambient_temp, measurement_p
   # Calculate heat removal required (consider ambient temperature)
   temperature_difference_celsius = ambient_temp - DESIRED_FRIDGE_TEMP
 
-  # Convert power from kJ/s to Joules based on measurement period
-  supplied_power_joules = supplied_power_kjs * measurement_period
+  # Convert power from J/s to Joules based on measurement period
+  supplied_power_joules = supplied_power_js * measurement_period
 
   # Calculate theoretical heat removal (Qcold) (assuming constant temperature difference)
-  mass_air = 1.225 * fridge_volume  # Assuming air density of 1.225 kg/m^3
+  mass_air = 1.289 * fridge_volume  # Assuming air density of 1.225 kg/m^3
   specific_heat_capacity = 1006  # Specific heat capacity of air (J/kg*K)
   heat_removal_joules = mass_air * specific_heat_capacity * temperature_difference_celsius * measurement_period
 
