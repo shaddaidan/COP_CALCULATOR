@@ -1,59 +1,50 @@
-# User input for fridge specific parameters
-compressor_power = float(input("Enter the average power consumption of your refrigerator compressor (Watts): "))
+# Average specific heat capacities
+CP_FOOD = 3.5  # kJ/kg*C (assumed average for various food items)
+CP_AIR = 1.005  # kJ/kg*C
 
-# User prompt for ambient temperature consideration
-consider_ambient_temp = input("Do you want to account for ambient temperature (y/n)?: ").lower()
+# Reasonable assumptions (modify if needed)
+BATTERY_DISCHARGE_FACTOR = 0.9  # Assuming good quality battery
+INVERTER_EFFICIENCY = 0.95  # Typical inverter efficiency
+INSULATION_FACTOR = 0.8  # Represents reduced efficiency due to insulation (adjust for polystyrene)
+AVERAGE_FRIDGE_OCCUPANCY = 0.7  # More realistic average occupancy by food (adjustable)
 
-# Additional input for ambient temperature if chosen
-if consider_ambient_temp == 'y':
-  AMBIENT_TEMP = float(input("Enter the ambient temperature (°C): "))
-else:
-  AMBIENT_TEMP = 25  # Default value
-
-# User input for door opening frequency
-door_openings_per_day = float(input("Enter the estimated number of door openings per day: "))
-
-def calculate_cop(compressor_power, ambient_temp, door_openings_per_day):
+def calculate_cop(t_in, t_store, compressor_power, fridge_volume):
   """
-  Calculates a more refined estimate of the COP (Coefficient of Performance) of a refrigerator.
+  Calculates COP of a solar-powered fridge based on fridge volume.
 
   Args:
-      compressor_power (float): Average power consumption of the compressor (Watts).
-      ambient_temp (float): Ambient temperature (°C).
-      door_openings_per_day (float): Estimated number of door openings per day.
+      t_in: Initial temperature of food (degrees Celsius).
+      t_store: Storage temperature (desired cool temperature, degrees Celsius).
+      compressor_power: Compressor power consumption (Watts).
+      fridge_volume: Volume of the fridge (liters).
 
   Returns:
-      float: The estimated COP value of the refrigerator.
+      COP (Coefficient of Performance) as a float.
   """
 
-  # Define constants
-  CP_AIR = 1006  # Specific heat capacity of air (J/kg*K)
-  DENSITY_AIR = 1.225  # Air density (kg/m^3)
-  FRIDGE_VOLUME = 0.1  # Adjust as needed based on your refrigerator volume (m^3)
-  MEASUREMENT_PERIOD = 86400  # Measurement period (seconds) in a day
+  # Estimated food volume based on average occupancy
+  food_volume = fridge_volume * AVERAGE_FRIDGE_OCCUPANCY
 
-  # Desired fridge temperature (Celsius)
-  DESIRED_FRIDGE_TEMP = 4
+  # Estimated food mass based on average density
+  average_food_density = 1000 # kg/m^3 (assuming a general average)
+  food_mass = food_volume / 1000 * average_food_density  # Convert liters to m^3
 
-  # Heat gain due to door openings (simplified calculation)
-  # Assuming each opening introduces a fixed amount of warm air
-  # Consider revising this based on data or studies
-  heat_gain_openings = door_openings_per_day * 1000  # Adjust the constant based on research
-
-  # Calculate theoretical heat removal (Qcold)
-  delta_t = AMBIENT_TEMP - DESIRED_FRIDGE_TEMP  # Temperature difference
-
-  mass_air = DENSITY_AIR * FRIDGE_VOLUME  # Mass of the air inside the fridge (kg)
-  qcold_joules = CP_AIR * mass_air * delta_t * MEASUREMENT_PERIOD + heat_gain_openings
-
-  # Calculate total energy consumed by the fridge (considering only compressor power)
-  total_energy_consumed_joules = compressor_power * MEASUREMENT_PERIOD
+  # Effective cooling efficiency considering insulation
+  effective_cooling_efficiency = CP_AIR * INSULATION_FACTOR
 
   # Calculate COP
-  cop = qcold_joules / total_energy_consumed_joules
+  cop = (food_mass * CP_FOOD + effective_cooling_efficiency * (t_in - t_store)) / (
+      compressor_power * (1 / (BATTERY_DISCHARGE_FACTOR * INVERTER_EFFICIENCY))
+  )
 
   return cop
 
+# Get user input
+initial_temp = float(input("Enter initial temperature of food (C): "))
+storage_temp = float(input("Enter desired storage temperature (C): "))
+compressor_power = float(input("Enter compressor power consumption (Watts): "))
+fridge_volume = float(input("Enter fridge volume (liters): "))
+
 # Calculate and print COP
-cop = calculate_cop(compressor_power, AMBIENT_TEMP, door_openings_per_day)
-print("Estimated COP of your refrigerator:", cop)
+cop = calculate_cop(initial_temp, storage_temp, compressor_power, fridge_volume)
+print("COP:", cop)
