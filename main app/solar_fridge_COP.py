@@ -66,3 +66,6 @@ print(f"  - Cooling Capacity: {results['Cooling Capacity (J/cycle)']:.2f} J/cycl
 print(f"  - Effective Storage Capacity: {results['Effective Storage Capacity (liters)']:.2f} liters")
 print(f"    (accounting for {SHELF_SPACE_REDUCTION * 100}% shelf space reduction)")
 
+
+
+# important notes average temperature of ilorin is 35degrees
