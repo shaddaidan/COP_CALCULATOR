@@ -68,4 +68,4 @@ print(f"    (accounting for {SHELF_SPACE_REDUCTION * 100}% shelf space reduction
 
 
 
-# important notes average temperature of ilorin is 35degrees
+# important notes average upper temperature of ilorin is 35degrees
